@@ -3,11 +3,11 @@ version: '3.1'
 services:
   app:
     build: .
-    image: his-admin-image
-    container_name: his-admin
+    image: acp-admin-image
+    container_name: acp-admin-front
     restart: always
     ports:
-      - "3002:80"
+      - "3007:80"
     networks:
       - proxynet
 
