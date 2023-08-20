@@ -9,6 +9,7 @@ import Users from './views/users'
 import Positions from "./views/positions";
 import Partners from "./views/partners";
 import Vacancies from "./views/vacancies";
+import Sliders from "./views/sliders";
 
 const routeItem = (title, path, component, icon, roles, isSite = false, show = true) => {
     return {
@@ -36,7 +37,8 @@ const routes = {
     positions: routeItem('Vəzifələr', '/positions', <Positions/>, <i className="pi pi-user"/>),
     partners: routeItem('Partnyorlar', '/partners', <Partners/>, <i className="pi pi-user"/>),
     vacancies: routeItem('Vakansiyalar', '/vacancies', <Vacancies/>, <i className="pi pi-user"/>),
-    selected: routeItem('Layihələr', '/projects', <Projects/>, <i className="pi pi-list"/>),
+    projects: routeItem('Layihələr', '/projects', <Projects/>, <i className="pi pi-list"/>),
+    sliders: routeItem('Karusel', '/slider-images', <Sliders/>, <i className="pi pi-list"/>),
     settings: routeItem('Ayarlar', '/settings', <Settings/>, <i className="pi pi-cog"/>, true)
 }
 

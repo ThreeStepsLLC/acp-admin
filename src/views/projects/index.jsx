@@ -13,7 +13,7 @@ const Blogs = () => {
     const [data, setData] = useState(null)
     const [form, setForm] = useState(null)
 
-    const fetchData = async() => {
+    const fetchData = async () => {
         setIsFetching(true)
         const data = await Constants.getProjects()
         setData(data?.map(item => {
@@ -53,11 +53,12 @@ const Blogs = () => {
         descriptionAZ: 'Açıqlama (az)',
         descriptionEN: 'Açıqlama (en)',
         descriptionRU: 'Açıqlama (ru)',
-        addressAZ:'Address (az)',
-        addressEN:'Address (en)',
-        addressRU:'Address (ru)',
+        addressAZ: 'Address (az)',
+        addressEN: 'Address (en)',
+        addressRU: 'Address (ru)',
         createDate: 'Tarix',
-        imageUrl: 'Şəkil'
+        imageUrl: 'Şəkil',
+        progress: 'Progress'
     }
 
     useEffect(() => {
@@ -81,11 +82,11 @@ const Blogs = () => {
                         visible={form}
                         draggable={false}
                         onHide={() => setForm(null)}
-                        style={{width: '50vw'}} breakpoints={{'960px': '75vw', '641px': '100vw'}}>
+                        style={{width: '70vw'}} breakpoints={{'960px': '75vw', '641px': '100vw'}}>
                         <Form fetchData={fetchData} form={form} setForm={setForm}/>
                     </Dialog>
                     <DataTable emptyMessage="Məlumat yoxdur"
-                        className="mt-5" value={data} responsiveLayout="scroll">
+                               className="mt-5" value={data} responsiveLayout="scroll">
                         <Column field="imageUrl" header={names.imageUrl} sortable/>
                         <Column field="titleAZ" header={names.titleAZ} sortable/>
                         <Column field="titleEN" header={names.titleEN} sortable/>
@@ -95,19 +96,20 @@ const Blogs = () => {
                         <Column field="titleRU" header={names.addressRU} sortable/>
                         <Column field="descriptionAZ" header={names.descriptionAZ} sortable
                                 body={(rowData) => (
-                                    <div dangerouslySetInnerHTML={{ __html: rowData.descriptionAZ }} />
+                                    <div dangerouslySetInnerHTML={{__html: rowData.descriptionAZ}}/>
                                 )}
                         />
                         <Column field="descriptionEN" header={names.descriptionEN} sortable
                                 body={(rowData) => (
-                                    <div dangerouslySetInnerHTML={{ __html: rowData.descriptionEN }} />
+                                    <div dangerouslySetInnerHTML={{__html: rowData.descriptionEN}}/>
                                 )}
                         />
                         <Column field="descriptionRU" header={names.descriptionRU} sortable
                                 body={(rowData) => (
-                                    <div dangerouslySetInnerHTML={{ __html: rowData.descriptionRU }} />
+                                    <div dangerouslySetInnerHTML={{__html: rowData.descriptionRU}}/>
                                 )}
                         />
+                        <Column field="progress" header={names.progress} sortable/>
                         <Column field="createDate" header={names.createDate} sortable/>
                         <Column field="buttons"/>
                     </DataTable>

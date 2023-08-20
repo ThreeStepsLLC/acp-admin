@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import Constants from '../../api/partners'
+import Constants from '../../api/silders'
 import {ProgressSpinner} from 'primereact/progressspinner'
 import {DataTable} from 'primereact/datatable'
 import {Column} from 'primereact/column'
@@ -8,7 +8,7 @@ import {Button} from 'primereact/button'
 import {Dialog} from 'primereact/dialog'
 import Form from './Form'
 
-const Blogs = () => {
+const Sliders = () => {
     const [isFetching, setIsFetching] = useState(true)
     const [data, setData] = useState(null)
     const [form, setForm] = useState(null)
@@ -21,14 +21,10 @@ const Blogs = () => {
                 ...item,
                 imageUrl: <img width="100px" height="100px" src={item?.imageUrl}
                                alt="Image"/>,
-                title: item?.title?.substring(0, 20),
                 createDate: moment(item?.createDate).format('DD/MM/YYYY'),
                 buttons: <div className="flex gap-1">
                     <Button className="p-button-danger" onClick={() => deleteItem(item?.id)}>
                         <i className="pi pi-trash"/>
-                    </Button>
-                    <Button className="p-button-success" onClick={() => setForm(item)}>
-                        <i className="pi pi-pencil"/>
                     </Button>
                 </div>
             }
@@ -64,7 +60,7 @@ const Blogs = () => {
                         <Button onClick={() => setForm(true)} className="b-button p-button-danger">Əlavə et</Button>
                     </div>
                     <Dialog
-                        header={`${form?.id ? 'Partnyora düzəliş et' : 'Partnyor əlavə et'}`}
+                        header={`${form?.id ? 'Xidmətə düzəliş et' : 'Karusel şəkli əlavə et'}`}
                         visible={form}
                         draggable={false}
                         onHide={() => setForm(null)}
@@ -73,7 +69,6 @@ const Blogs = () => {
                     </Dialog>
                     <DataTable paginator rows={10} rowsPerPageOptions={[10, 20, 30]} emptyMessage="Məlumat yoxdur"
                                className="mt-5" value={data} responsiveLayout="scroll">
-                        <Column field="title" header={names.title} sortable/>
                         <Column field="createDate" header={names.createDate} sortable/>
                         <Column field="imageUrl" header={names.imageUrl} sortable/>
                         <Column field="buttons"/>
@@ -83,4 +78,4 @@ const Blogs = () => {
     )
 }
 
-export default Blogs
+export default Sliders
