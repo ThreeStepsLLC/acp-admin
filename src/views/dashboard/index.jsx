@@ -1,6 +1,6 @@
 import {Card} from 'primereact/card'
 import ThreeSteps from '../../assets/images/threesteps.jpg'
-import Logo from '../../assets/images/favicon.png'
+import Logo from '../../assets/images/logo.png'
 
 const Dashboard = () => {
     return (
@@ -11,7 +11,7 @@ const Dashboard = () => {
                         <Card>
                             <a href="https://threesteps.az" target="_blank"
                                 className="flex justify-content-center align-items-center">
-                                <img width="200" height="100" src={ThreeSteps} alt="ThreeSteps"/>
+                                <img width="40%" height="0" src={ThreeSteps} alt="ThreeSteps"/>
                             </a>
                         </Card>
                     </div>

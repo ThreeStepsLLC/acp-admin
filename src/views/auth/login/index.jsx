@@ -3,7 +3,7 @@ import {Controller, useForm} from 'react-hook-form'
 import {InputText} from 'primereact/inputtext'
 import {Card} from 'primereact/card'
 import {Button} from 'primereact/button'
-import Logo from '../../../assets/images/favicon.png'
+import Logo from '../../../assets/images/logo.png'
 import {useState} from 'react'
 import Auth from '../../../api/auth'
 import {useNavigate} from 'react-router-dom'
@@ -45,8 +45,8 @@ const Login = () => {
             <div className="grid">
                 <div className="col-12 md:col-4 md:col-offset-4">
                     <Card className="mt-5">
-                        <div className="text-center">
-                            <img width="100px" height="100px" src={Logo} alt="Image"/>
+                        <div className="text-center mb-5">
+                            <img width="30%" height="0%" src={Logo} alt="Image"/>
                         </div>
                         <div className="title">Giriş</div>
                         <form onSubmit={handleSubmit(login)} className="grid">

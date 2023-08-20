@@ -3,7 +3,7 @@ import './index.scss'
 import {routeArr, routes} from '../../../routes'
 import {Link, NavLink, useNavigate} from 'react-router-dom'
 import classNames from 'classnames'
-import Logo from '../../../assets/images/favicon.png'
+import Logo from '../../../assets/images/logo.png'
 
 const CustomSidebar = () => {
     const [actvie, setActive] = useState(true)
@@ -34,7 +34,7 @@ const CustomSidebar = () => {
             </div>
             <Link to={routes.dashboard.path}
                 className="img flex justify-content-center">
-                <img width="50" height="50" src={Logo} alt="HIS"/>
+                <img width="70" height="50" src={Logo} alt="HIS" className='my-2'/>
             </Link>
             <nav>
                 <ul className="menu">
