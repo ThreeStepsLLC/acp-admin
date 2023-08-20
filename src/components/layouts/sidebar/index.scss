@@ -1,0 +1,138 @@
+@import "../../../assets/scss/variables";
+
+
+.sidebar {
+  background-color: $color-main;
+  height: 100%;
+  position: fixed;
+  width: 60px;
+  min-width: 60px;
+  padding-top: 80px;
+  z-index: 99;
+  transition: all 400ms;
+
+  .sub-nav-title {
+    display: none;
+    padding-left: 18px;
+    color: white;
+    margin:10px 0;
+  }
+
+  &.active {
+    width: 240px;
+    min-width: 240px;
+    padding-top: 0;
+
+    .avatar-container {
+      display: flex;
+    }
+
+    .menu {
+      li {
+        a {
+          padding: 0 14px;
+          span {
+            display: block;
+          }
+        }
+      }
+    }
+
+    .sub-nav-title {
+      display: block;
+    }
+
+    .logout {
+      span {
+        display: inline;
+      }
+    }
+  }
+
+  .toggle-sidebar {
+    position: absolute;
+    right: -18px;
+    top: 20px;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background-color: $color-main;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+  }
+
+  .avatar-container {
+    display: none;
+    justify-content: center;
+    padding:18px 0;
+  }
+
+  .menu {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    max-height: 85vh;
+    overflow: auto;
+
+    li {
+      a {
+        padding: 0 18px;
+        background-color: $color-main;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 12px;
+        height: 52px;
+        transition: all 400ms;
+
+        span {
+          display: none;
+        }
+
+        &.active {
+          color: $color-main;
+          background-color: #fff;
+        }
+
+        &:hover {
+          color: $color-main;
+          background-color: #fff;
+        }
+
+        i {
+          font-size: 20px;
+        }
+      }
+    }
+    }
+
+  .logout {
+    position: absolute;
+    bottom: 16px;
+    left: 2px;
+    padding: 0 18px;
+    color: #fff;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    cursor: pointer;
+
+    span {
+      display: none;
+    }
+  }
+}
+
+@media screen and (max-width: 768px){
+  .sidebar {
+    .toggle-sidebar {
+      display: block;
+    }
+  }
+}
