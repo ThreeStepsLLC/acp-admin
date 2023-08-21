@@ -29,12 +29,17 @@ const Form = ({form, setForm, fetchData}) => {
         delete data.galleryImages
 
         Object.keys(data).forEach(item => {
-            if (item === 'projectDetails') {
-                formData.append(item, JSON.stringify(data[item]))
-            } else {
-                formData.append(item, data[item])
+                if (item === 'projectDetails') {
+                    for (let i = 0; i < Object.keys(data[item]).length; i++) {
+                        for (let keyChild in data[item][i]) {
+                            formData.append(`${item}[${i}].${keyChild}`, data[item][i][keyChild])
+                        }
+                    }
+                } else {
+                    formData.append(item, data[item])
+                }
             }
-        })
+        )
 
         formData.append('file', file)
         if (galleryFiles.length) {
