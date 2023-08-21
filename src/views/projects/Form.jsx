@@ -10,14 +10,7 @@ import {CKEditor} from "@ckeditor/ckeditor5-react";
 const Form = ({form, setForm, fetchData}) => {
     const {control, setValue, handleSubmit, reset} = useForm({
         defaultValues: {
-            projectDetails: [{
-                titleAZ: '',
-                titleEN: '',
-                titleRU: '',
-                descriptionAZ: '',
-                descriptionEN: '',
-                descriptionRU: '',
-            }]
+            projectDetails: []
         }
     })
     const detailsArr = useFieldArray({
@@ -66,12 +59,13 @@ const Form = ({form, setForm, fetchData}) => {
     const getProject = async () => {
         const res = await Constants.getProject(form?.id)
         setGalleryImages(res?.galleryImages)
+        delete res.galleryImages
+        reset(res)
     }
 
     useEffect(() => {
         if (form?.id) {
             getProject()
-            reset(form)
         }
     }, [form])
 
@@ -103,6 +97,30 @@ const Form = ({form, setForm, fetchData}) => {
                                    onChange={onChange}/>
                     </div>
                 )} name="titleRU"/>
+                <Controller control={control} render={({field: {value, onChange}}) => (
+                    <div className="col-12">
+                        <label
+                            htmlFor="addressAZ">Address (az)</label>
+                        <InputText className="w-full" name="addressAZ" id="addressAZ" value={value}
+                                   onChange={onChange}/>
+                    </div>
+                )} name="addressAZ"/>
+                <Controller control={control} render={({field: {value, onChange}}) => (
+                    <div className="col-12">
+                        <label
+                            htmlFor="addressEN">Address (en)</label>
+                        <InputText className="w-full" name="addressEN" id="addressEN" value={value}
+                                   onChange={onChange}/>
+                    </div>
+                )} name="addressEN"/>
+                <Controller control={control} render={({field: {value, onChange}}) => (
+                    <div className="col-12">
+                        <label
+                            htmlFor="addressRU">Address (ru)</label>
+                        <InputText className="w-full" name="addressRU" id="addressRU" value={value}
+                                   onChange={onChange}/>
+                    </div>
+                )} name="addressRU"/>
                 <Controller control={control} render={({field: {value, onChange}}) => (
                     <div className="col-12">
                         <label
@@ -235,12 +253,10 @@ const Form = ({form, setForm, fetchData}) => {
                                                id={`projectDetails.${index}.titleAZ`}
                                                value={value}
                                                onChange={onChange}/>
-                                    {index != 0 && (
-                                        <Button type="button" onClick={() => detailsArr.remove(index)}
-                                                className="p-button-danger d-flex align-items-center gap-1">
-                                            <i className="pi pi-minus"/>
-                                        </Button>
-                                    )}
+                                    <Button type="button" onClick={() => detailsArr.remove(index)}
+                                            className="p-button-danger d-flex align-items-center gap-1">
+                                        <i className="pi pi-minus"/>
+                                    </Button>
                                 </div>
                             </div>
                         )} name={`projectDetails.${index}.titleAZ`}/>

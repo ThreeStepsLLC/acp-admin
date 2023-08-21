@@ -53,9 +53,6 @@ const Blogs = () => {
         descriptionAZ: 'Açıqlama (az)',
         descriptionEN: 'Açıqlama (en)',
         descriptionRU: 'Açıqlama (ru)',
-        addressAZ: 'Address (az)',
-        addressEN: 'Address (en)',
-        addressRU: 'Address (ru)',
         createDate: 'Tarix',
         imageUrl: 'Şəkil',
         progress: 'Progress'
@@ -91,9 +88,9 @@ const Blogs = () => {
                         <Column field="titleAZ" header={names.titleAZ} sortable/>
                         <Column field="titleEN" header={names.titleEN} sortable/>
                         <Column field="titleRU" header={names.titleRU} sortable/>
-                        <Column field="titleAZ" header={names.addressAZ} sortable/>
-                        <Column field="titleEN" header={names.addressEN} sortable/>
-                        <Column field="titleRU" header={names.addressRU} sortable/>
+                        <Column field="addressAZ" header={names.addressAZ} sortable/>
+                        <Column field="addressEN" header={names.addressEN} sortable/>
+                        <Column field="addressRU" header={names.addressRU} sortable/>
                         <Column field="descriptionAZ" header={names.descriptionAZ} sortable
                                 body={(rowData) => (
                                     <div dangerouslySetInnerHTML={{__html: rowData.descriptionAZ}}/>
