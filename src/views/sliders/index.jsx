@@ -55,7 +55,7 @@ const Sliders = () => {
                 </div>
             ) : (
                 <div className="content w-full">
-                    <p className="page-title">Partnyorlar</p>
+                    <p className="page-title">Slayder</p>
                     <div className="col-12">
                         <Button onClick={() => setForm(true)} className="b-button p-button-danger">Əlavə et</Button>
                     </div>

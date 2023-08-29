@@ -2,14 +2,13 @@ import {ProgressSpinner} from 'primereact/progressspinner'
 import {useEffect, useState} from 'react'
 import Constants from '../../api/constants'
 import {Button} from 'primereact/button'
-import Add from './Add'
+import Add from './Form'
 import {Dialog} from 'primereact/dialog'
 
-const Certificates = () => {
+const Lisences = () => {
     const [isFetching, setIsFetching] = useState(true)
     const [data, setData] = useState(null)
     const [modalIsActive, setModalIsActive] = useState(false)
-    const {REACT_APP_FILE_URL} = process.env
 
     const fetchData = async() => {
         setIsFetching(true)
@@ -64,4 +63,4 @@ const Certificates = () => {
     )
 }
 
-export default Certificates
+export default Lisences

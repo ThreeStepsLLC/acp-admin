@@ -38,8 +38,9 @@ const routes = {
     partners: routeItem('Partnyorlar', '/partners', <Partners/>, <i className="pi pi-user"/>),
     vacancies: routeItem('Vakansiyalar', '/vacancies', <Vacancies/>, <i className="pi pi-user"/>),
     projects: routeItem('Layihələr', '/projects', <Projects/>, <i className="pi pi-list"/>),
-    sliders: routeItem('Karusel', '/slider-images', <Sliders/>, <i className="pi pi-list"/>),
-    settings: routeItem('Ayarlar', '/settings', <Settings/>, <i className="pi pi-cog"/>, true)
+    sliders: routeItem('Karusel', '/slider-images', <Sliders />, <i className="pi pi-list"/>),
+    settings: routeItem('Ayarlar', '/settings', <Settings />, <i className="pi pi-cog"/>),
+    certificates: routeItem('Lisenziyalar', '/certificates', <Certificates />, <i className="pi pi-cog"/>),
 }
 
 const routeArr = Object.values(routes)
