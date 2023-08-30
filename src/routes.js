@@ -1,9 +1,8 @@
 import Dashboard from './views/dashboard'
 import Settings from './views/settings'
 import Constants from './views/constant'
-import Certificates from './views/certificates'
-import Blogs from './views/blogs'
-import Services from './views/services'
+import Lisences from './views/lisences'
+import SeperateLisences from './views/seperateLisences'
 import Projects from './views/projects'
 import Users from './views/users'
 import Positions from "./views/positions";
@@ -40,7 +39,10 @@ const routes = {
     projects: routeItem('Layihələr', '/projects', <Projects/>, <i className="pi pi-list"/>),
     sliders: routeItem('Karusel', '/slider-images', <Sliders />, <i className="pi pi-list"/>),
     settings: routeItem('Ayarlar', '/settings', <Settings />, <i className="pi pi-cog"/>),
-    certificates: routeItem('Lisenziyalar', '/certificates', <Certificates />, <i className="pi pi-cog"/>),
+    licenses: routeItem('Lisenziyalar', '/licenses', <Lisences />, <i className="pi pi-cog"/>),
+    separate_licenses: routeItem('Ana Səhifə lisenziyalar', '/separate-licenses', <SeperateLisences />, <i className="pi pi-cog"/>),
+
+    
 }
 
 const routeArr = Object.values(routes)

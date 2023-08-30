@@ -1,7 +1,7 @@
 import {Controller, useForm} from 'react-hook-form'
 import {toast} from 'react-toastify'
 import {useEffect, useState} from 'react'
-import Constants from '../../api/silders'
+import Constants from '../../api/licenses'
 import {InputText} from 'primereact/inputtext'
 import {Button} from 'primereact/button'
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
