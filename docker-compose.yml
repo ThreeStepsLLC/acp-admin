@@ -6,8 +6,6 @@ services:
     image: acp-admin-image
     container_name: acp-admin-front
     restart: always
-    ports:
-      - "3007:80"
     networks:
       - proxynet
 
