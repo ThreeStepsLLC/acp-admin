@@ -19,7 +19,7 @@ const Dashboard = () => {
                         <Card>
                             <a href="http://afmpro.az/" target="_blank"
                                 className="flex justify-content-center align-items-center">
-                                <img width="100" height="100" src={Logo} alt="ACP"/>
+                                <img width="100" height="100" src={Logo} alt="AFM PRO"/>
                             </a>
                         </Card>
                     </div>
