@@ -3,8 +3,8 @@ version: '3.1'
 services:
   app:
     build: .
-    image: acp-admin-image
-    container_name: acp-admin-front
+    image: afmpro-admin-image
+    container_name: afmpro-admin-front
     restart: always
     networks:
       - proxynet
