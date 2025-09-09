@@ -3,7 +3,7 @@ import './index.scss'
 import {routeArr, routes} from '../../../routes'
 import {Link, NavLink, useNavigate} from 'react-router-dom'
 import classNames from 'classnames'
-import Logo from '../../../assets/images/logo.png'
+import Logo from '../../../assets/images/logo.jpeg'
 
 const CustomSidebar = () => {
     const [actvie, setActive] = useState(true)

@@ -1,6 +1,6 @@
 import {Card} from 'primereact/card'
 import ThreeSteps from '../../assets/images/threesteps.jpg'
-import Logo from '../../assets/images/logo.png'
+import Logo from '../../assets/images/logo.jpeg'
 
 const Dashboard = () => {
     return (
