@@ -6,6 +6,7 @@ on:
       - afmpro
 
 env:
+  APP_NAME: afmpro-admin
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
@@ -54,17 +55,17 @@ jobs:
 
       - name: Copy files to remote server
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh_key root@${{ secrets.HOST_IP }} "mkdir -p /root/ThreeStepsLLC/afmpro-admin"
-          scp -o StrictHostKeyChecking=no -i ssh_key docker-compose.processed.yml root@${{ secrets.HOST_IP }}:/root/ThreeStepsLLC/afmpro-admin/docker-compose.yml
+          ssh -o StrictHostKeyChecking=no -i ssh_key root@${{ secrets.HOST_IP }} "mkdir -p /root/ThreeStepsLLC/${{ env.APP_NAME }}"
+          scp -o StrictHostKeyChecking=no -i ssh_key docker-compose.processed.yml root@${{ secrets.HOST_IP }}:/root/ThreeStepsLLC/${{ env.APP_NAME }}/docker-compose.yml
           if [ -n "${{ secrets.ENV_FILE }}" ]; then
             echo "${{ secrets.ENV_FILE }}" > .env
-            scp -o StrictHostKeyChecking=no -i ssh_key .env root@${{ secrets.HOST_IP }}:/root/ThreeStepsLLC/afmpro-admin/.env
+            scp -o StrictHostKeyChecking=no -i ssh_key .env root@${{ secrets.HOST_IP }}:/root/ThreeStepsLLC/${{ env.APP_NAME }}/.env
           fi
 
       - name: Deploy on remote server
         run: |
           ssh -o StrictHostKeyChecking=no -i ssh_key root@${{ secrets.HOST_IP }} "
-          cd /root/ThreeStepsLLC/afmpro-admin
+          cd /root/ThreeStepsLLC/${{ env.APP_NAME }}
           echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker compose down
           docker compose up -d
