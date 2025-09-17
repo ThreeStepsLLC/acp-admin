@@ -6,7 +6,6 @@ on:
       - afmpro
 
 env:
-  APP_NAME: ${{ github.event.repository.name }}
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
@@ -51,21 +50,21 @@ jobs:
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_key
           chmod 400 ssh_key
-          envsubst '$IMAGE_NAME $IMAGE_TAG $APP_NAME' < docker-compose.yml > docker-compose.processed.yml
+          envsubst '$IMAGE_NAME $IMAGE_TAG' < docker-compose.yml > docker-compose.processed.yml
 
       - name: Copy files to remote server
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh_key root@${{ secrets.HOST_IP }} "mkdir -p /root/ThreeStepsLLC/${{ env.APP_NAME }}"
-          scp -o StrictHostKeyChecking=no -i ssh_key docker-compose.processed.yml root@${{ secrets.HOST_IP }}:/root/ThreeStepsLLC/${{ env.APP_NAME }}/docker-compose.yml
+          ssh -o StrictHostKeyChecking=no -i ssh_key root@${{ secrets.HOST_IP }} "mkdir -p /root/ThreeStepsLLC/afmpro-admin"
+          scp -o StrictHostKeyChecking=no -i ssh_key docker-compose.processed.yml root@${{ secrets.HOST_IP }}:/root/ThreeStepsLLC/afmpro-admin/docker-compose.yml
           if [ -n "${{ secrets.ENV_FILE }}" ]; then
             echo "${{ secrets.ENV_FILE }}" > .env
-            scp -o StrictHostKeyChecking=no -i ssh_key .env root@${{ secrets.HOST_IP }}:/root/ThreeStepsLLC/${{ env.APP_NAME }}/.env
+            scp -o StrictHostKeyChecking=no -i ssh_key .env root@${{ secrets.HOST_IP }}:/root/ThreeStepsLLC/afmpro-admin/.env
           fi
 
       - name: Deploy on remote server
         run: |
           ssh -o StrictHostKeyChecking=no -i ssh_key root@${{ secrets.HOST_IP }} "
-          cd /root/ThreeStepsLLC/${{ env.APP_NAME }}
+          cd /root/ThreeStepsLLC/afmpro-admin
           echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker compose down
           docker compose up -d
