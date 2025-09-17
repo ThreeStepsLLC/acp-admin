@@ -1,0 +1,72 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - afmpro
+
+env:
+  APP_NAME: ${{ github.event.repository.name }}
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set lowercase IMAGE_NAME
+        run: echo "IMAGE_NAME=ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build and push Docker image
+        run: |
+          docker build --cache-from $IMAGE_NAME:latest \
+            -t $IMAGE_NAME:$IMAGE_TAG \
+            --build-arg REACT_APP_API_URL=http://api.afmpro.az/api/v1/ .
+          docker push $IMAGE_NAME:$IMAGE_TAG
+          docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:latest
+          docker push $IMAGE_NAME:latest
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://app.afmpro.az
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set lowercase IMAGE_NAME
+        run: echo "IMAGE_NAME=ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Prepare docker-compose file
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_key
+          chmod 400 ssh_key
+          envsubst '$IMAGE_NAME $IMAGE_TAG $APP_NAME' < docker-compose.yml > docker-compose.processed.yml
+
+      - name: Copy files to remote server
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ssh_key root@${{ secrets.HOST_IP }} "mkdir -p /root/ThreeStepsLLC/${{ env.APP_NAME }}"
+          scp -o StrictHostKeyChecking=no -i ssh_key docker-compose.processed.yml root@${{ secrets.HOST_IP }}:/root/ThreeStepsLLC/${{ env.APP_NAME }}/docker-compose.yml
+          if [ -n "${{ secrets.ENV_FILE }}" ]; then
+            echo "${{ secrets.ENV_FILE }}" > .env
+            scp -o StrictHostKeyChecking=no -i ssh_key .env root@${{ secrets.HOST_IP }}:/root/ThreeStepsLLC/${{ env.APP_NAME }}/.env
+          fi
+
+      - name: Deploy on remote server
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ssh_key root@${{ secrets.HOST_IP }} "
+          cd /root/ThreeStepsLLC/${{ env.APP_NAME }}
+          echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          docker compose down
+          docker compose up -d
+          docker image prune -af"
