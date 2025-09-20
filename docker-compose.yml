@@ -1,16 +1,29 @@
-version: '3.1'
+# version: '3.1'
+
+# services:
+#   app:
+#     build: .
+#     image: acp-admin-image
+#     container_name: acp-admin-front
+#     restart: always
+#     ports:
+#       - "3007:80"
+#     networks:
+#       - proxynet
+
+# networks:
+#   proxynet:
+#     external: true
 
 services:
-  app:
-    build: .
-    image: acp-admin-image
-    container_name: acp-admin-front
+  acp-admin:
+    image: $IMAGE_NAME:$IMAGE_TAG
+    container_name: $APP_NAME
     restart: always
-    ports:
-      - "3007:80"
     networks:
-      - proxynet
+      proxynet:
 
 networks:
   proxynet:
     external: true
+    name: proxynet
