@@ -24,7 +24,7 @@ const routeItem = (title, path, component, icon, roles, isSite = false, show = t
 
 const routes = {
     users: routeItem('İstifadəçilər', '/users', <Users/>, <i className="pi pi-users"/>),
-    dashboard: routeItem('ACP Engineering - Admin', '/dashboard', <Dashboard/>, <i className="pi pi-user"/>, null, false, false),
+    dashboard: routeItem('Elevate Agency - Admin', '/dashboard', <Dashboard/>, <i className="pi pi-user"/>, null, false, false),
     our_experiences: routeItem('Təcrübələrimiz', '/our-experiences', <Constants id="our-experiences" title="Təcrübələrimiz"/>, <i className="pi pi-user"/>),
     who_are_we: routeItem('Biz kimik', '/who-are-we', <Constants id="who-are-we" title="Biz kimik"/>, <i className="pi pi-user"/>),
     our_values: routeItem('Dəyərlərimiz', '/our-values', <Constants id="our-values" title="Dəyərlərimiz"/>, <i className="pi pi-user"/>),

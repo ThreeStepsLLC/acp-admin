@@ -17,9 +17,9 @@ const Dashboard = () => {
                     </div>
                     <div className="col-12 md:col-6">
                         <Card>
-                            <a href="https://acp.com.az/" target="_blank"
+                            <a href="https://elevateagency.az/" target="_blank"
                                 className="flex justify-content-center align-items-center">
-                                <img width="100" height="100" src={Logo} alt="ACP"/>
+                                <img width="100" height="100" src={Logo} alt="Elevate Agency"/>
                             </a>
                         </Card>
                     </div>
