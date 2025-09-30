@@ -3,10 +3,10 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - master
+      - elevateagency
 
 env:
-  APP_NAME: ${{ github.event.repository.name }}
+  APP_NAME: elevateagency-admin
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
