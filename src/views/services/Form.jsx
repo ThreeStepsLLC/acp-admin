@@ -1,118 +1,319 @@
 import {Controller, useForm} from 'react-hook-form'
 import {toast} from 'react-toastify'
 import {useEffect, useState} from 'react'
-import Constants from '../../api/constants'
+import ServicesAPI from '../../api/services'
 import {InputText} from 'primereact/inputtext'
-import {InputTextarea} from 'primereact/inputtextarea'
+import {InputNumber} from 'primereact/inputnumber'
 import {Button} from 'primereact/button'
-import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import {CKEditor} from "@ckeditor/ckeditor5-react";
+import {Dropdown} from 'primereact/dropdown'
+import {TabView, TabPanel} from 'primereact/tabview'
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic"
+import {CKEditor} from "@ckeditor/ckeditor5-react"
+import lampIcon from '../../assets/svg/lamp-icon.svg'
+import layerIcon from '../../assets/svg/layer-icon.svg'
+import settingsIcon from '../../assets/svg/settings-icon.svg'
+import shareIcon from '../../assets/svg/share-icon.svg'
+
+const availableIcons = [
+    { name: 'Lamp Icon', value: 'lamp-icon.svg', icon: lampIcon },
+    { name: 'Layer Icon', value: 'layer-icon.svg', icon: layerIcon },
+    { name: 'Settings Icon', value: 'settings-icon.svg', icon: settingsIcon },
+    { name: 'Share Icon', value: 'share-icon.svg', icon: shareIcon }
+]
 
 const Form = ({form, setForm, fetchData}) => {
-    const {control,setValue, handleSubmit, reset} = useForm()
+    const {control, setValue, handleSubmit, reset, formState: {errors}} = useForm()
     const [loader, setLoader] = useState(false)
-    const [file, setFile] = useState(null)
+    const [selectedIcon, setSelectedIcon] = useState(null)
+    const [activeTab, setActiveTab] = useState(0)
 
     const submit = async data => {
+        // Validation
+        if (!data.titleAz || !data.titleEn || !data.titleRu) {
+            toast.error('Bütün dil başlıqları tələb olunur')
+            return
+        }
+        if (!data.descriptionAz || !data.descriptionEn || !data.descriptionRu) {
+            toast.error('Bütün dil açıqlamaları tələb olunur')
+            return
+        }
+        if (!data.orderNumber && data.orderNumber !== 0) {
+            toast.error('Sıra nömrəsi tələb olunur')
+            return
+        }
+        if (!selectedIcon) {
+            toast.error('İkon seçilməlidir')
+            return
+        }
+
         const formData = new FormData()
-        delete data.file
-
-        Object.keys(data).forEach(item => {
-            formData.append(item, data[item])
-        })
-
-        formData.append('file', file)
+        
+        if (form?.id) {
+            formData.append('id', form.id)
+        }
+        
+        formData.append('titleAz', data.titleAz)
+        formData.append('titleEn', data.titleEn)
+        formData.append('titleRu', data.titleRu)
+        formData.append('descriptionAz', data.descriptionAz)
+        formData.append('descriptionEn', data.descriptionEn)
+        formData.append('descriptionRu', data.descriptionRu)
+        formData.append('orderNumber', data.orderNumber)
+        
+        if (data.status !== undefined) {
+            formData.append('status', data.status)
+        }
+        
+        // Convert SVG icon name to file
+        if (selectedIcon) {
+            const iconData = availableIcons.find(i => i.value === selectedIcon)
+            if (iconData) {
+                // Fetch the SVG file and convert to blob
+                const response = await fetch(iconData.icon)
+                const blob = await response.blob()
+                const file = new File([blob], selectedIcon, { type: 'image/svg+xml' })
+                formData.append('file', file)
+            }
+        }
 
         setLoader(true)
         try {
-            await Constants[form?.id ? 'updateService' : 'addService'](formData)
+            await ServicesAPI[form?.id ? 'update' : 'add'](formData)
+            toast.success(form?.id ? 'Xidmət uğurla yeniləndi' : 'Xidmət uğurla əlavə edildi')
             fetchData()
             setForm(null)
         } catch (e) {
-            toast.error('Xəta baş verdi')
+            toast.error('Xəta baş verdi: ' + (e?.response?.data?.message || e.message))
         }
-        setLoader(true)
+        setLoader(false)
     }
 
     useEffect(() => {
         if (form?.id) {
             reset(form)
+            // Extract icon name from iconUrl if exists
+            if (form?.iconUrl) {
+                const iconName = form.iconUrl.split('/').pop()
+                const matchedIcon = availableIcons.find(i => i.value === iconName)
+                if (matchedIcon) {
+                    setSelectedIcon(matchedIcon.value)
+                }
+            }
+        } else {
+            reset({
+                titleAz: '',
+                titleEn: '',
+                titleRu: '',
+                descriptionAz: '',
+                descriptionEn: '',
+                descriptionRu: '',
+                orderNumber: 0,
+                status: true
+            })
+            setSelectedIcon(null)
         }
-    }, [form])
+    }, [form, reset])
 
     return (
         <form onSubmit={handleSubmit(submit)} className="grid w-full">
-            <Controller control={control} render={({field: {value, onChange}}) => (
-                <div className="col-12">
-                    <label
-                        htmlFor="titleAZ">Başlıq (az)</label>
-                    <InputText className="w-full" name="titleAZ" id="titleAZ" value={value}
-                        onChange={onChange}/>
-                </div>
-            )} name="titleAZ"/>
-            <Controller control={control} render={({field: {value, onChange}}) => (
-                <div className="col-12">
-                    <label
-                        htmlFor="titleEN">Başlıq (en)</label>
-                    <InputText className="w-full" name="titleEN" id="titleEN" value={value}
-                        onChange={onChange}/>
-                </div>
-            )} name="titleEN"/>
-            <Controller control={control} render={({field: {value, onChange}}) => (
-                <div className="col-12">
-                    <label
-                        htmlFor="titleRU">Başlıq (ru)</label>
-                    <InputText className="w-full" name="titleRU" id="titleRU" value={value}
-                        onChange={onChange}/>
-                </div>
-            )} name="titleRU"/>
-            <Controller control={control} render={({field: {value, onChange}}) => (
-                <div className="col-12">
-                    <label
-                        htmlFor="descriptionAZ">Açıqlama (az)</label>
-                    <CKEditor editor={ClassicEditor} data={value} onChange={(event,editor) => {
-                        setValue('descriptionAZ',editor.getData())
-                    }}/>
-                </div>
-            )} name="descriptionAZ"/>
-            <Controller control={control} render={({field: {value, onChange}}) => (
-                <div className="col-12">
-                    <label
-                        htmlFor="descriptionEN">Açıqlama (en)</label>
-                    <CKEditor editor={ClassicEditor} data={value} onChange={(event,editor) => {
-                        setValue('descriptionEN',editor.getData())
-                    }}/>
-                </div>
-            )} name="descriptionEN"/>
-            <Controller control={control} render={({field: {value, onChange}}) => (
-                <div className="col-12">
-                    <label
-                        htmlFor="descriptionRU">Açıqlama (ru)</label>
-                    <CKEditor editor={ClassicEditor} data={value} onChange={(event,editor) => {
-                        setValue('descriptionRU',editor.getData())
-                    }}/>
-                </div>
-            )} name="descriptionRU"/>
             <div className="col-12">
-                <label
-                    className="p-button p-button-secondary"
-                    htmlFor="file">{file ? 'Şəkli dəyiş' : 'Şəkil seç'}</label>
-                <input className="v-hidden" type="file" accept=".png,.jpg,.jpeg,.jiff" name="file"
-                    id="file"
-                    onChange={e => setFile(e.target.files[0])}/>
+                <TabView activeIndex={activeTab} onTabChange={(e) => setActiveTab(e.index)}>
+                    <TabPanel header="Azərbaycan">
+                        <div className="grid">
+                            <Controller 
+                                control={control} 
+                                name="titleAz"
+                                rules={{required: 'Başlıq tələb olunur'}}
+                                render={({field: {value, onChange}}) => (
+                                    <div className="col-12">
+                                        <label htmlFor="titleAz">Başlıq (AZ) *</label>
+                                        <InputText 
+                                            className="w-full" 
+                                            id="titleAz" 
+                                            value={value || ''}
+                                            onChange={onChange}
+                                        />
+                                    </div>
+                                )}
+                            />
+                            <Controller 
+                                control={control} 
+                                name="descriptionAz"
+                                rules={{required: 'Açıqlama tələb olunur'}}
+                                render={({field: {value}}) => (
+                                    <div className="col-12">
+                                        <label htmlFor="descriptionAz">Açıqlama (AZ) *</label>
+                                        <CKEditor 
+                                            editor={ClassicEditor} 
+                                            data={value || ''} 
+                                            onChange={(event, editor) => {
+                                                setValue('descriptionAz', editor.getData())
+                                            }}
+                                        />
+                                    </div>
+                                )}
+                            />
+                        </div>
+                    </TabPanel>
+                    
+                    <TabPanel header="English">
+                        <div className="grid">
+                            <Controller 
+                                control={control} 
+                                name="titleEn"
+                                rules={{required: 'Title is required'}}
+                                render={({field: {value, onChange}}) => (
+                                    <div className="col-12">
+                                        <label htmlFor="titleEn">Title (EN) *</label>
+                                        <InputText 
+                                            className="w-full" 
+                                            id="titleEn" 
+                                            value={value || ''}
+                                            onChange={onChange}
+                                        />
+                                    </div>
+                                )}
+                            />
+                            <Controller 
+                                control={control} 
+                                name="descriptionEn"
+                                rules={{required: 'Description is required'}}
+                                render={({field: {value}}) => (
+                                    <div className="col-12">
+                                        <label htmlFor="descriptionEn">Description (EN) *</label>
+                                        <CKEditor 
+                                            editor={ClassicEditor} 
+                                            data={value || ''} 
+                                            onChange={(event, editor) => {
+                                                setValue('descriptionEn', editor.getData())
+                                            }}
+                                        />
+                                    </div>
+                                )}
+                            />
+                        </div>
+                    </TabPanel>
+                    
+                    <TabPanel header="Русский">
+                        <div className="grid">
+                            <Controller 
+                                control={control} 
+                                name="titleRu"
+                                rules={{required: 'Заголовок обязателен'}}
+                                render={({field: {value, onChange}}) => (
+                                    <div className="col-12">
+                                        <label htmlFor="titleRu">Заголовок (RU) *</label>
+                                        <InputText 
+                                            className="w-full" 
+                                            id="titleRu" 
+                                            value={value || ''}
+                                            onChange={onChange}
+                                        />
+                                    </div>
+                                )}
+                            />
+                            <Controller 
+                                control={control} 
+                                name="descriptionRu"
+                                rules={{required: 'Описание обязательно'}}
+                                render={({field: {value}}) => (
+                                    <div className="col-12">
+                                        <label htmlFor="descriptionRu">Описание (RU) *</label>
+                                        <CKEditor 
+                                            editor={ClassicEditor} 
+                                            data={value || ''} 
+                                            onChange={(event, editor) => {
+                                                setValue('descriptionRu', editor.getData())
+                                            }}
+                                        />
+                                    </div>
+                                )}
+                            />
+                        </div>
+                    </TabPanel>
+                </TabView>
             </div>
-            {(file || form?.imageUrl) && (
+
+            <Controller 
+                control={control} 
+                name="orderNumber"
+                rules={{required: 'Sıra nömrəsi tələb olunur'}}
+                render={({field: {value, onChange}}) => (
+                    <div className="col-12 md:col-6">
+                        <label htmlFor="orderNumber">Sıra nömrəsi *</label>
+                        <InputNumber 
+                            className="w-full" 
+                            id="orderNumber" 
+                            value={value}
+                            onValueChange={(e) => onChange(e.value)}
+                            min={0}
+                        />
+                    </div>
+                )}
+            />
+
+            <div className="col-12 md:col-6">
+                <label htmlFor="iconSelect">İkon seç *</label>
+                <Dropdown 
+                    id="iconSelect"
+                    value={selectedIcon}
+                    options={availableIcons}
+                    onChange={(e) => setSelectedIcon(e.value)}
+                    optionLabel="name"
+                    optionValue="value"
+                    placeholder="İkon seçin"
+                    className="w-full"
+                    itemTemplate={(option) => (
+                        <div className="flex align-items-center gap-2">
+                            <img src={option.icon} alt={option.name} width="30" height="30" />
+                            <span>{option.name}</span>
+                        </div>
+                    )}
+                    valueTemplate={(option) => {
+                        if (option) {
+                            const selected = availableIcons.find(i => i.value === option)
+                            return (
+                                <div className="flex align-items-center gap-2">
+                                    <img src={selected?.icon} alt={selected?.name} width="30" height="30" />
+                                    <span>{selected?.name}</span>
+                                </div>
+                            )
+                        }
+                        return <span>İkon seçin</span>
+                    }}
+                />
+            </div>
+
+            {selectedIcon && (
                 <div className="col-12">
-                    <img width="150" height="150"
-                        src={file ? URL.createObjectURL(file) : `${form?.imageUrl}`}
-                        alt="Image"/>
+                    <div className="flex align-items-center gap-2">
+                        <span>Seçilmiş ikon:</span>
+                        <img 
+                            width="80" 
+                            height="80"
+                            src={availableIcons.find(i => i.value === selectedIcon)?.icon}
+                            alt="Selected Icon"
+                            style={{objectFit: 'contain', border: '1px solid #ddd', padding: '10px', borderRadius: '8px'}}
+                        />
+                    </div>
                 </div>
             )}
+
             <div className="col-12">
-                <div className="flex justify-content-end">
-                    <Button className="p-button-danger d-flex align-items-center gap-1" disabled={loader}>
-                        {loader && <i className="pi pi-spin pi-spinner mr-1"/>}
-            Yadda saxla
+                <div className="flex justify-content-end gap-2">
+                    <Button 
+                        type="button"
+                        className="p-button-secondary" 
+                        onClick={() => setForm(null)}
+                        disabled={loader}>
+                        Ləğv et
+                    </Button>
+                    <Button 
+                        type="submit"
+                        className="p-button-danger" 
+                        disabled={loader}>
+                        {loader && <i className="pi pi-spin pi-spinner mr-2"/>}
+                        Yadda saxla
                     </Button>
                 </div>
             </div>
