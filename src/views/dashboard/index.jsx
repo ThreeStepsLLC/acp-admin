@@ -16,10 +16,10 @@ const Dashboard = () => {
                         </Card>
                     </div>
                     <div className="col-12 md:col-6">
-                        <Card>
+                        <Card style={{height: '180px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                             <a href="http://afmpro.az/" target="_blank"
                                 className="flex justify-content-center align-items-center">
-                                <img width="100%" height="100" src={Logo} alt="AFM PRO"/>
+                                <img width="35%" height="auto" src={Logo} alt="AFM PRO"/>
                             </a>
                         </Card>
                     </div>
