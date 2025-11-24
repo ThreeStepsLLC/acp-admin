@@ -4,6 +4,7 @@ import MainLayout from './components/layouts/mainLayout'
 import '../node_modules/primeflex/primeflex.scss'
 import Login from './views/auth/login'
 import {ToastContainer} from 'react-toastify'
+import {ConfirmDialog} from 'primereact/confirmdialog'
 import 'react-toastify/dist/ReactToastify.css'
 import setConfig from './dateConfig'
 
@@ -12,6 +13,7 @@ const App = () => {
     return (
         <>
             <ToastContainer autoClose="500"/>
+            <ConfirmDialog />
             <BrowserRouter>
                 <Routes>
                     <Route path="/" exact element={<Navigate to="/login" replace={true}/>}/>
