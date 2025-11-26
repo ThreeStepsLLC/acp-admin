@@ -3,7 +3,7 @@ name: Build and Deploy (Onay Consulting)
 on:
   push:
     branches:
-      - onayconsulting 
+      - onayconsultingsss 
 
 env:
   APP_NAME: onayconsulting-admin
@@ -51,7 +51,6 @@ jobs:
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_key
           chmod 400 ssh_key
-          # docker-compose.yml faylında $IMAGE_NAME və $IMAGE_TAG dəyişənləri olmalıdır
           envsubst '$IMAGE_NAME $IMAGE_TAG' < docker-compose.yml > docker-compose.processed.yml
 
       - name: Copy files to remote server
@@ -71,12 +70,9 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ssh_key deployuser@${{ secrets.HOST_IP }} "
           cd /home/deployuser/apps/${{ env.APP_NAME }}
           
-          # Serverdə Login
           echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           
-          # Yeniləmə prosesi
           docker compose down
           docker compose up -d
           
-          # Təmizlik
           docker image prune -af"
