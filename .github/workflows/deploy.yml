@@ -1,12 +1,12 @@
-name: Build and Deploy
+name: Build and Deploy (Onay Consulting)
 
 on:
   push:
     branches:
-      - afmpro
+      - onayconsulting 
 
 env:
-  APP_NAME: afmpro-admin
+  APP_NAME: onayconsulting-admin
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
@@ -29,7 +29,7 @@ jobs:
         run: |
           docker build --cache-from $IMAGE_NAME:latest \
             -t $IMAGE_NAME:$IMAGE_TAG \
-            --build-arg REACT_APP_API_URL=//api.afmpro.az/api/v1/ .
+            --build-arg REACT_APP_API_URL=//api.onayconsulting.az/api/v1/ . 
           docker push $IMAGE_NAME:$IMAGE_TAG
           docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:latest
           docker push $IMAGE_NAME:latest
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: https://app.afmpro.az
+      url: https://app.onayconsulting.az 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -51,22 +51,32 @@ jobs:
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_key
           chmod 400 ssh_key
+          # docker-compose.yml faylında $IMAGE_NAME və $IMAGE_TAG dəyişənləri olmalıdır
           envsubst '$IMAGE_NAME $IMAGE_TAG' < docker-compose.yml > docker-compose.processed.yml
 
       - name: Copy files to remote server
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh_key root@${{ secrets.HOST_IP }} "mkdir -p /root/ThreeStepsLLC/${{ env.APP_NAME }}"
-          scp -o StrictHostKeyChecking=no -i ssh_key docker-compose.processed.yml root@${{ secrets.HOST_IP }}:/root/ThreeStepsLLC/${{ env.APP_NAME }}/docker-compose.yml
+          # DİQQƏT: root əvəzinə deployuser və yeni qovluq yolu
+          ssh -o StrictHostKeyChecking=no -i ssh_key deployuser@${{ secrets.HOST_IP }} "mkdir -p /home/deployuser/apps/${{ env.APP_NAME }}"
+          
+          scp -o StrictHostKeyChecking=no -i ssh_key docker-compose.processed.yml deployuser@${{ secrets.HOST_IP }}:/home/deployuser/apps/${{ env.APP_NAME }}/docker-compose.yml
+          
           if [ -n "${{ secrets.ENV_FILE }}" ]; then
             echo "${{ secrets.ENV_FILE }}" > .env
-            scp -o StrictHostKeyChecking=no -i ssh_key .env root@${{ secrets.HOST_IP }}:/root/ThreeStepsLLC/${{ env.APP_NAME }}/.env
+            scp -o StrictHostKeyChecking=no -i ssh_key .env deployuser@${{ secrets.HOST_IP }}:/home/deployuser/apps/${{ env.APP_NAME }}/.env
           fi
 
       - name: Deploy on remote server
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh_key root@${{ secrets.HOST_IP }} "
-          cd /root/ThreeStepsLLC/${{ env.APP_NAME }}
+          ssh -o StrictHostKeyChecking=no -i ssh_key deployuser@${{ secrets.HOST_IP }} "
+          cd /home/deployuser/apps/${{ env.APP_NAME }}
+          
+          # Serverdə Login
           echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          
+          # Yeniləmə prosesi
           docker compose down
           docker compose up -d
+          
+          # Təmizlik
           docker image prune -af"
