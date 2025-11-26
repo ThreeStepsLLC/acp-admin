@@ -1,8 +1,10 @@
 services:
   onayconsulting-admin:
-    image: ${IMAGE_NAME}:${IMAGE_TAG}
+    image: ${IMAGE_NAME}:${IMAGE_TAG} 
     container_name: onayconsulting-admin
     restart: always
+    ports:
+       - "127.0.0.1:3000:3000" 
     networks:
       - proxynet
 
