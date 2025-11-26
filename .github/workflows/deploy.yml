@@ -47,38 +47,36 @@ jobs:
       - name: Set lowercase IMAGE_NAME
         run: echo "IMAGE_NAME=ghcr.io/$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
-      - name: Prepare SSH Key
+      - name: Prepare SSH key
         run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_key
-          chmod 400 ssh_key
+          echo "${{ secrets.ONAY_SSH_PRIVATE_KEY }}" > ssh_key
+          chmod 600 ssh_key
 
       - name: Copy files to remote server
         run: |
-          # 1. Qovluğu yarat
-          ssh -o StrictHostKeyChecking=no -i ssh_key deployuser@${{ secrets.HOST_IP }} "mkdir -p /home/deployuser/apps/${{ env.APP_NAME }}"
+          ssh -o StrictHostKeyChecking=no -i ssh_key deployuser@${{ secrets.ONAY_HOST_IP }} "mkdir -p /home/deployuser/apps/${{ env.APP_NAME }}"
           
-          # 2. docker-compose.yml faylını olduğu kimi at (envsubst lazım deyil)
-          scp -o StrictHostKeyChecking=no -i ssh_key docker-compose.yml deployuser@${{ secrets.HOST_IP }}:/home/deployuser/apps/${{ env.APP_NAME }}/docker-compose.yml
+          scp -o StrictHostKeyChecking=no -i ssh_key docker-compose.yml deployuser@${{ secrets.ONAY_HOST_IP }}:/home/deployuser/apps/${{ env.APP_NAME }}/docker-compose.yml
           
-          # 3. .env faylını serverdə YARADIRIQ (Image adını içinə yazırıq)
-          ssh -o StrictHostKeyChecking=no -i ssh_key deployuser@${{ secrets.HOST_IP }} "echo 'IMAGE_NAME=${{ env.IMAGE_NAME }}' > /home/deployuser/apps/${{ env.APP_NAME }}/.env && echo 'IMAGE_TAG=${{ env.IMAGE_TAG }}' >> /home/deployuser/apps/${{ env.APP_NAME }}/.env"
-          
-          # 4. Əlavə Secret-ləri (əgər varsa) də .env-ə əlavə edirik
-          if [ -n "${{ secrets.ENV_FILE }}" ]; then
-             echo "${{ secrets.ENV_FILE }}" >> extra_env.txt
-             scp -o StrictHostKeyChecking=no -i ssh_key extra_env.txt deployuser@${{ secrets.HOST_IP }}:/home/deployuser/apps/${{ env.APP_NAME }}/extra_env.txt
-             ssh -o StrictHostKeyChecking=no -i ssh_key deployuser@${{ secrets.HOST_IP }} "cat /home/deployuser/apps/${{ env.APP_NAME }}/extra_env.txt >> /home/deployuser/apps/${{ env.APP_NAME }}/.env && rm /home/deployuser/apps/${{ env.APP_NAME }}/extra_env.txt"
-          fi
+          echo "IMAGE_NAME=$IMAGE_NAME" > .env.production
+          echo "IMAGE_TAG=$IMAGE_TAG" >> .env.production
+          echo "${{ secrets.ONAY_ENV_FILE }}" >> .env.production
+          scp -o StrictHostKeyChecking=no -i ssh_key .env.production deployuser@${{ secrets.ONAY_HOST_IP }}:/home/deployuser/apps/${{ env.APP_NAME }}/.env
 
       - name: Deploy on remote server
         run: |
-          ssh -o StrictHostKeyChecking=no -i ssh_key deployuser@${{ secrets.HOST_IP }} "
+          ssh -o StrictHostKeyChecking=no -i ssh_key deployuser@${{ secrets.ONAY_HOST_IP }} "
           cd /home/deployuser/apps/${{ env.APP_NAME }}
           
-          # Login
           echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           
-          # Restart
-          docker compose down
-          docker compose up -d
+          docker compose pull
+          docker compose up -d --remove-orphans
+          
+          echo '=== Container Status ==='
+          docker compose ps
+          
+          echo '=== Recent Logs ==='
+          docker compose logs --tail=50
+          
           docker image prune -af"
