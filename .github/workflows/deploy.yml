@@ -26,15 +26,29 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Build and push Docker image
+        env:
+          REACT_APP_API_URL: https://api.onayconsulting.az/api/v1/
+          REACT_APP_BASE_URL: https://api.onayconsulting.az
         run: |
-          docker build --cache-from $IMAGE_NAME:latest \
+          echo "🔨 Building Docker image with build args:"
+          echo "  REACT_APP_API_URL=$REACT_APP_API_URL"
+          echo "  REACT_APP_BASE_URL=$REACT_APP_BASE_URL"
+          
+          docker build \
+            --cache-from $IMAGE_NAME:latest \
+            --build-arg REACT_APP_API_URL=$REACT_APP_API_URL \
+            --build-arg REACT_APP_BASE_URL=$REACT_APP_BASE_URL \
             -t $IMAGE_NAME:$IMAGE_TAG \
-            --build-arg REACT_APP_API_URL=https://api.onayconsulting.az/api/v1/ \
-            --build-arg REACT_APP_BASE_URL=https://api.onayconsulting.az \
             . 
+          
+          echo "✅ Build completed successfully"
+          echo "📤 Pushing image: $IMAGE_NAME:$IMAGE_TAG"
+          
           docker push $IMAGE_NAME:$IMAGE_TAG
           docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:latest
           docker push $IMAGE_NAME:latest
+          
+          echo "✅ Image pushed successfully"
 
   deploy:
     needs: build

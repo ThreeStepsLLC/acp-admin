@@ -1,20 +1,30 @@
 /**
  * API Configuration
  * Centralized API URL management for both development and production
+ * 
+ * IMPORTANT: These values are embedded at BUILD TIME by React's webpack.
+ * They CANNOT be changed at runtime. Docker must pass --build-arg during build.
  */
+
+// Production fallback (used if build args are missing)
+const PRODUCTION_API_URL = 'https://api.onayconsulting.az/api/v1/'
+const PRODUCTION_BASE_URL = 'https://api.onayconsulting.az'
 
 /**
  * Get the base API URL
  * @returns {string} The API base URL
  */
 export const getApiBaseUrl = () => {
-    // In production, always use the production API
-    if (process.env.NODE_ENV === 'production') {
-        return 'https://api.onayconsulting.az/api/v1/'
+    // Use build-time env variable (embedded by webpack during npm build)
+    const apiUrl = process.env.REACT_APP_API_URL
+    
+    // Fallback to production if not set or is localhost
+    if (!apiUrl || apiUrl.includes('localhost') || apiUrl === '//localhost:8080/api/v1/') {
+        console.warn('⚠️ API URL not set or is localhost, using production:', PRODUCTION_API_URL)
+        return PRODUCTION_API_URL
     }
     
-    // In development, use env variable or fallback to production
-    return process.env.REACT_APP_API_URL || 'https://api.onayconsulting.az/api/v1/'
+    return apiUrl
 }
 
 /**
@@ -22,13 +32,34 @@ export const getApiBaseUrl = () => {
  * @returns {string} The base URL without /api/v1/
  */
 export const getBaseUrl = () => {
-    // In production, always use the production URL
-    if (process.env.NODE_ENV === 'production') {
-        return 'https://api.onayconsulting.az'
+    // Use build-time env variable (embedded by webpack during npm build)
+    const baseUrl = process.env.REACT_APP_BASE_URL
+    
+    // Fallback to production if not set or is localhost
+    if (!baseUrl || baseUrl.includes('localhost')) {
+        console.warn('⚠️ Base URL not set or is localhost, using production:', PRODUCTION_BASE_URL)
+        return PRODUCTION_BASE_URL
     }
     
-    // In development, use env variable or fallback to production
-    return process.env.REACT_APP_BASE_URL || 'https://api.onayconsulting.az'
+    return baseUrl
+}
+
+/**
+ * Debug function to check what URLs are being used
+ * Call this in browser console: window.checkApiConfig()
+ */
+export const debugConfig = () => {
+    console.log('🔍 API Configuration Debug:')
+    console.log('NODE_ENV:', process.env.NODE_ENV)
+    console.log('REACT_APP_API_URL (build-time):', process.env.REACT_APP_API_URL)
+    console.log('REACT_APP_BASE_URL (build-time):', process.env.REACT_APP_BASE_URL)
+    console.log('getApiBaseUrl():', getApiBaseUrl())
+    console.log('getBaseUrl():', getBaseUrl())
+}
+
+// Expose debug function globally for troubleshooting
+if (typeof window !== 'undefined') {
+    window.checkApiConfig = debugConfig
 }
 
 export default {
