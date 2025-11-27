@@ -4,14 +4,14 @@ import {routeArr, routes} from '../../../routes'
 import {Link, NavLink, useNavigate} from 'react-router-dom'
 import classNames from 'classnames'
 import Logo from '../../../assets/images/logo.png'
+import {logout as logoutUser} from '../../../hooks/useAuth'
 
 const CustomSidebar = () => {
     const [actvie, setActive] = useState(true)
     const navigate = useNavigate()
 
     const logout = async() => {
-        localStorage.clear()
-        navigate('/login')
+        logoutUser(navigate)
     }
 
     let permissions
