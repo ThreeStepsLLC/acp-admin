@@ -1,8 +1,9 @@
 import axios from 'axios'
 import {toast} from 'react-toastify'
+import {getApiBaseUrl} from '../config/api'
 
 const instance = axios.create({
-    baseURL: process.env.REACT_APP_API_URL
+    baseURL: getApiBaseUrl()
 })
 
 instance.interceptors.request.use(config => {
@@ -24,7 +25,12 @@ instance.interceptors.response.use(response => {
 }, error => {
     const data = error.response?.data
     if (error.response?.status === 401) {
-        window.location.href = '/login'
+        // Only redirect to login if not already on login page
+        if (!window.location.pathname.includes('/login')) {
+            localStorage.removeItem('token')
+            localStorage.removeItem('permissions')
+            window.location.href = '/login'
+        }
     }
     if (data?.data instanceof Object) {
         Object.keys(data?.data).forEach(item => {

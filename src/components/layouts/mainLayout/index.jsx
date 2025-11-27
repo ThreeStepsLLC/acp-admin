@@ -5,10 +5,15 @@ import {useNavigate} from 'react-router-dom'
 
 const MainLayout = ({item}) => {
     const navigate = useNavigate()
-    const token = localStorage.getItem('token')
-    if (!token) {
-        navigate('/login')
-    }
+    
+    useEffect(() => {
+        // Check authentication only once on mount
+        const token = localStorage.getItem('token')
+        if (!token) {
+            navigate('/login', {replace: true})
+        }
+    }, [navigate])
+
     useEffect(() => {
         document.title = item.title
     }, [item.title])

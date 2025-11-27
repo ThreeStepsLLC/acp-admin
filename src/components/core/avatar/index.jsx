@@ -1,7 +1,8 @@
 import './index.scss'
+import {getBaseUrl} from '../../config/api'
 
 const Avatar = ({user, id}) => {
-    const baseURL = process.env.REACT_APP_BASE_URL
+    const baseURL = getBaseUrl()
 
     const getPhoto = () => {
         const {photo} = user
