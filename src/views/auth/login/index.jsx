@@ -4,7 +4,7 @@ import {InputText} from 'primereact/inputtext'
 import {Card} from 'primereact/card'
 import {Button} from 'primereact/button'
 import Logo from '../../../assets/images/logo.png'
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import Auth from '../../../api/auth'
 import {useNavigate} from 'react-router-dom'
 import {routes} from '../../../routes'
@@ -16,6 +16,15 @@ const Login = () => {
     const [loader, setLoader] = useState(false)
     const navigate = useNavigate()
     const [passwordIsShow, setPasswordIsShow] = useState(false)
+
+    // Redirect to dashboard if already authenticated
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        if (token) {
+            navigate(routes.dashboard.path, {replace: true})
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []) // Only check once on mount
 
     const login = async data => {
         setLoader(true)
