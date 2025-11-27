@@ -18,6 +18,7 @@
     "primereact": "^9.0.0-beta.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "sass": "^1.94.2",
     "react-hook-form": "^7.43.0",
     "react-router-dom": "^6.8.1",
     "react-scripts": "5.0.1",
@@ -58,7 +59,6 @@
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
-    "sass": "^1.94.2",
     "stylelint": "^14.5.3",
     "stylelint-config-standard": "^25.0.0",
     "stylelint-config-standard-scss": "^3.0.0"
