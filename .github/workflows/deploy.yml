@@ -74,11 +74,6 @@ jobs:
           
           scp -o StrictHostKeyChecking=no -i ssh_key docker-compose.yml deployuser@${{ secrets.ONAY_HOST_IP }}:/home/deployuser/apps/${{ env.APP_NAME }}/docker-compose.yml
           
-          echo "IMAGE_NAME=$IMAGE_NAME" > .env.production
-          echo "IMAGE_TAG=$IMAGE_TAG" >> .env.production
-          echo "${{ secrets.ONAY_ENV_FILE }}" >> .env.production
-          scp -o StrictHostKeyChecking=no -i ssh_key .env.production deployuser@${{ secrets.ONAY_HOST_IP }}:/home/deployuser/apps/${{ env.APP_NAME }}/.env
-
       - name: Deploy on remote server
         run: |
           ssh -o StrictHostKeyChecking=no -i ssh_key deployuser@${{ secrets.ONAY_HOST_IP }} "
