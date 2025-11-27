@@ -17,7 +17,7 @@ ENV NODE_ENV=production
 
 # Install dependencies
 COPY package.json package-lock.json* /app/
-RUN npm install --force
+RUN npm ci
 
 # Copy source code and build
 # The build process will embed REACT_APP_* env vars into the bundle
