@@ -1,19 +1,11 @@
 import CustomSidebar from '../sidebar'
 import {useEffect} from 'react'
 import './index.scss'
-import {useNavigate} from 'react-router-dom'
+import {useAuthGuard} from '../../../hooks/useAuth'
 
 const MainLayout = ({item}) => {
-    const navigate = useNavigate()
-    
-    useEffect(() => {
-        // Check authentication only once on mount
-        const token = localStorage.getItem('token')
-        if (!token) {
-            navigate('/login', {replace: true})
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []) // Empty dependency array - only run once on mount
+    // Protect this route - redirect to login if not authenticated
+    useAuthGuard()
 
     useEffect(() => {
         document.title = item.title
