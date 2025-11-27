@@ -12,7 +12,8 @@ const MainLayout = ({item}) => {
         if (!token) {
             navigate('/login', {replace: true})
         }
-    }, [navigate])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []) // Empty dependency array - only run once on mount
 
     useEffect(() => {
         document.title = item.title
