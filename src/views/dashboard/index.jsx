@@ -19,7 +19,7 @@ const Dashboard = () => {
                         <Card style={{height: '180px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                             <a href="http://afmpro.az/" target="_blank"
                                 className="flex justify-content-center align-items-center">
-                                <img width="35%" height="auto" src={Logo} alt="AFM PRO"/>
+                                <img width="35%" height="auto" src={Logo} alt="ONAY CONSULTING"/>
                             </a>
                         </Card>
                     </div>
