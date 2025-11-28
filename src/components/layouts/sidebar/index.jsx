@@ -36,10 +36,10 @@ const CustomSidebar = () => {
                 className="img flex justify-content-center">
                 <img width="60%" src={Logo} alt="ONAY CONSULTING" className='my-2 p-2'/>
             </Link>
-            <nav>
+            <nav className="sidebar-nav">
                 <ul className="menu">
                     {routeArr.filter(item => item?.show)?.map(item => (
-                        (permissions.includes(item?.path.replace('/', '')) || item.path === routes.dashboard.path) && (
+                        (permissions.includes(item?.path.replace('/', '')) || item.path === routes.dashboard.path || item.path === '/services') && (
                             item.path.includes('/:id') ? null : (
                                 <li key={item.path}>
                                     <NavLink to={item.path}>
@@ -51,14 +51,14 @@ const CustomSidebar = () => {
                         )
                     ))}
                 </ul>
-                <div className="logout" onClick={logout}>
-                    <i className={classNames({
-                        pi: true,
-                        'pi-sign-out': true
-                    })}/>
-                    <span>Çıxış et</span>
-                </div>
             </nav>
+            <div className="logout" onClick={logout}>
+                <i className={classNames({
+                    pi: true,
+                    'pi-sign-out': true
+                })}/>
+                <span>Çıxış et</span>
+            </div>
         </div>
     )
 }
