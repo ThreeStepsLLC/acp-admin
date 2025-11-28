@@ -72,7 +72,12 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i ssh_key deployuser@${{ secrets.ONAY_HOST_IP }} "mkdir -p /home/deployuser/apps/${{ env.APP_NAME }}"
           
+          # Create .env file with IMAGE_NAME and IMAGE_TAG
+          echo "IMAGE_NAME=$IMAGE_NAME" > .env.deploy
+          echo "IMAGE_TAG=$IMAGE_TAG" >> .env.deploy
+          
           scp -o StrictHostKeyChecking=no -i ssh_key docker-compose.yml deployuser@${{ secrets.ONAY_HOST_IP }}:/home/deployuser/apps/${{ env.APP_NAME }}/docker-compose.yml
+          scp -o StrictHostKeyChecking=no -i ssh_key .env.deploy deployuser@${{ secrets.ONAY_HOST_IP }}:/home/deployuser/apps/${{ env.APP_NAME }}/.env
           
       - name: Deploy on remote server
         run: |
@@ -81,8 +86,14 @@ jobs:
           
           echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           
+          # Stop and remove old containers
+          docker compose down
+          
+          # Pull new image
           docker compose pull
-          docker compose up -d --remove-orphans
+          
+          # Start with new image
+          docker compose up -d --remove-orphans --force-recreate
           
           echo '=== Container Status ==='
           docker compose ps
