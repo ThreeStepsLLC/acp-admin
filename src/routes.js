@@ -41,7 +41,7 @@ const routes = {
     projects: routeItem('Layihələr', '/projects', <Projects/>, <i className="pi pi-list"/>, null, false, false),
     sliders: routeItem('Karusel', '/slider-images', <Sliders />, <i className="pi pi-list"/>),
     settings: routeItem('Ayarlar', '/settings', <Settings />, <i className="pi pi-cog"/>),
-    licenses: routeItem('Lisenziyalar', '/licenses', <Lisences />, <i className="pi pi-cog"/>),
+    licenses: routeItem('Lisenziyalar', '/licenses', <Lisences />, <i className="pi pi-cog"/>, null, false, false),
     separate_licenses: routeItem('Ana Səhifə lisenziyalar', '/separate-licenses', <SeperateLisences />, <i className="pi pi-cog"/>),
 
     
