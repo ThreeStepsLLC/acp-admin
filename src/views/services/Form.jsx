@@ -9,20 +9,31 @@ import {Dropdown} from 'primereact/dropdown'
 import {TabView, TabPanel} from 'primereact/tabview'
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic"
 import {CKEditor} from "@ckeditor/ckeditor5-react"
+import {debugFormData} from '../../utils/debugFormData'
 import lampIcon from '../../assets/svg/lamp-icon.svg'
 import layerIcon from '../../assets/svg/layer-icon.svg'
 import settingsIcon from '../../assets/svg/settings-icon.svg'
 import shareIcon from '../../assets/svg/share-icon.svg'
+import e1Icon from '../../assets/svg/e1.svg'
+import e2Icon from '../../assets/svg/e2.svg'
+import e3Icon from '../../assets/svg/e3.svg'
+import e4Icon from '../../assets/svg/e4.svg'
+import e5Icon from '../../assets/svg/e5.svg'
 
 const availableIcons = [
     { name: 'Lamp Icon', value: 'lamp-icon.svg', icon: lampIcon },
     { name: 'Layer Icon', value: 'layer-icon.svg', icon: layerIcon },
     { name: 'Settings Icon', value: 'settings-icon.svg', icon: settingsIcon },
-    { name: 'Share Icon', value: 'share-icon.svg', icon: shareIcon }
+    { name: 'Share Icon', value: 'share-icon.svg', icon: shareIcon },
+    { name: 'E1 Icon', value: 'e1.svg', icon: e1Icon },
+    { name: 'E2 Icon', value: 'e2.svg', icon: e2Icon },
+    { name: 'E3 Icon', value: 'e3.svg', icon: e3Icon },
+    { name: 'E4 Icon', value: 'e4.svg', icon: e4Icon },
+    { name: 'E5 Icon', value: 'e5.svg', icon: e5Icon }
 ]
 
 const Form = ({form, setForm, fetchData}) => {
-    const {control, setValue, handleSubmit, reset, formState: {errors}} = useForm()
+    const {control, setValue, handleSubmit, reset} = useForm()
     const [loader, setLoader] = useState(false)
     const [selectedIcon, setSelectedIcon] = useState(null)
     const [activeTab, setActiveTab] = useState(0)
@@ -46,44 +57,57 @@ const Form = ({form, setForm, fetchData}) => {
             return
         }
 
-        const formData = new FormData()
-        
-        if (form?.id) {
-            formData.append('id', form.id)
-        }
-        
-        formData.append('titleAz', data.titleAz)
-        formData.append('titleEn', data.titleEn)
-        formData.append('titleRu', data.titleRu)
-        formData.append('descriptionAz', data.descriptionAz)
-        formData.append('descriptionEn', data.descriptionEn)
-        formData.append('descriptionRu', data.descriptionRu)
-        formData.append('orderNumber', data.orderNumber)
-        
-        if (data.status !== undefined) {
-            formData.append('status', data.status)
-        }
-        
-        // Convert SVG icon name to file
-        if (selectedIcon) {
-            const iconData = availableIcons.find(i => i.value === selectedIcon)
-            if (iconData) {
-                // Fetch the SVG file and convert to blob
-                const response = await fetch(iconData.icon)
-                const blob = await response.blob()
-                const file = new File([blob], selectedIcon, { type: 'image/svg+xml' })
-                formData.append('file', file)
-            }
-        }
-
         setLoader(true)
+        
         try {
+            const formData = new FormData()
+            
+            if (form?.id) {
+                formData.append('id', form.id)
+            }
+            
+            formData.append('titleAz', data.titleAz || '')
+            formData.append('titleEn', data.titleEn || '')
+            formData.append('titleRu', data.titleRu || '')
+            formData.append('descriptionAz', data.descriptionAz || '')
+            formData.append('descriptionEn', data.descriptionEn || '')
+            formData.append('descriptionRu', data.descriptionRu || '')
+            formData.append('orderNumber', String(data.orderNumber || 0))
+            formData.append('status', data.status !== undefined ? String(data.status) : 'true')
+            
+            // Handle file upload for icon
+            if (selectedIcon) {
+                const iconData = availableIcons.find(i => i.value === selectedIcon)
+                if (iconData) {
+                    try {
+                        // Fetch the SVG file and convert to blob
+                        const response = await fetch(iconData.icon)
+                        if (!response.ok) {
+                            throw new Error(`Failed to fetch icon: ${response.status}`)
+                        }
+                        const blob = await response.blob()
+                        const file = new File([blob], selectedIcon, { type: 'image/svg+xml' })
+                        formData.append('file', file)
+                    } catch (fetchError) {
+                        console.error('Error fetching icon:', fetchError)
+                        toast.error('İkon yüklənərkən xəta baş verdi')
+                        setLoader(false)
+                        return
+                    }
+                }
+            }
+
+            // Debug: Log FormData contents
+            debugFormData(formData, 'Services Form Submission')
+
             await ServicesAPI[form?.id ? 'update' : 'add'](formData)
             toast.success(form?.id ? 'Xidmət uğurla yeniləndi' : 'Xidmət uğurla əlavə edildi')
             fetchData()
             setForm(null)
         } catch (e) {
-            toast.error('Xəta baş verdi: ' + (e?.response?.data?.message || e.message))
+            console.error('Submit error:', e)
+            const errorMessage = e?.response?.data?.message || e?.message || 'Naməlum xəta baş verdi'
+            toast.error('Xəta baş verdi: ' + errorMessage)
         }
         setLoader(false)
     }
@@ -146,7 +170,7 @@ const Form = ({form, setForm, fetchData}) => {
                                         <CKEditor 
                                             editor={ClassicEditor} 
                                             data={value || ''} 
-                                            onChange={(event, editor) => {
+                                            onChange={(_, editor) => {
                                                 setValue('descriptionAz', editor.getData())
                                             }}
                                         />
@@ -184,7 +208,7 @@ const Form = ({form, setForm, fetchData}) => {
                                         <CKEditor 
                                             editor={ClassicEditor} 
                                             data={value || ''} 
-                                            onChange={(event, editor) => {
+                                            onChange={(_, editor) => {
                                                 setValue('descriptionEn', editor.getData())
                                             }}
                                         />
@@ -222,7 +246,7 @@ const Form = ({form, setForm, fetchData}) => {
                                         <CKEditor 
                                             editor={ClassicEditor} 
                                             data={value || ''} 
-                                            onChange={(event, editor) => {
+                                            onChange={(_, editor) => {
                                                 setValue('descriptionRu', editor.getData())
                                             }}
                                         />

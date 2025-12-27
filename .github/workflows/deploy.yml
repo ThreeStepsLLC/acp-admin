@@ -27,8 +27,8 @@ jobs:
 
       - name: Build and push Docker image
         env:
-          REACT_APP_API_URL: https://api.onayconsulting.az/api/v1/
-          REACT_APP_BASE_URL: https://api.onayconsulting.az
+          REACT_APP_API_URL: https://apim.elevateagency.az/api/v1/
+          REACT_APP_BASE_URL: https://apim.elevateagency.az
         run: |
           echo "🔨 Building Docker image with build args:"
           echo "  REACT_APP_API_URL=$REACT_APP_API_URL"

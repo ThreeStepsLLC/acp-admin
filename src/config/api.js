@@ -7,8 +7,8 @@
  */
 
 // Production fallback (used if build args are missing)
-const PRODUCTION_API_URL = 'https://api.onayconsulting.az/api/v1/'
-const PRODUCTION_BASE_URL = 'https://api.onayconsulting.az'
+const PRODUCTION_API_URL = 'https://apim.elevateagency.az/api/v1/'
+const PRODUCTION_BASE_URL = 'https://apim.elevateagency.az'
 
 /**
  * Get the base API URL
