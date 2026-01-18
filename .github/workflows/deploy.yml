@@ -3,10 +3,10 @@ name: Build and Deploy
 on:
   push:
     branches:
-      - afmpro
+      - azko-admin
 
 env:
-  APP_NAME: afmpro-admin
+  APP_NAME: azko-admin
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
@@ -29,7 +29,7 @@ jobs:
         run: |
           docker build --cache-from $IMAGE_NAME:latest \
             -t $IMAGE_NAME:$IMAGE_TAG \
-            --build-arg REACT_APP_API_URL=//api.afmpro.az/api/v1/ .
+            --build-arg REACT_APP_API_URL=//api.azko.az/api/v1/ .
           docker push $IMAGE_NAME:$IMAGE_TAG
           docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_NAME:latest
           docker push $IMAGE_NAME:latest
@@ -39,7 +39,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: https://app.afmpro.az
+      url: https://app.azko.az
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
