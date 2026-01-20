@@ -17,7 +17,7 @@ ENV NODE_ENV=production
 
 # Install dependencies
 COPY package.json package-lock.json* /app/
-RUN npm install --legacy-peer-deps
+RUN npm install --legacy-peer-deps --force
 
 # Copy source code and build
 # The build process will embed REACT_APP_* env vars into the bundle
