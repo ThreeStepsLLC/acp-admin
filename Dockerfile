@@ -6,8 +6,8 @@ WORKDIR /app
 
 # Build arguments - passed from docker build --build-arg
 # These MUST be provided during build, not at runtime
-ARG REACT_APP_API_URL=https://api.onayconsulting.az/api/v1/
-ARG REACT_APP_BASE_URL=https://api.onayconsulting.az
+ARG REACT_APP_API_URL=https://api.az-ko.az/api/v1/
+ARG REACT_APP_BASE_URL=https://api.az-ko.az
 
 # Convert ARG to ENV so React's webpack can access them during build
 # React embeds these values into the JavaScript bundle at BUILD TIME
