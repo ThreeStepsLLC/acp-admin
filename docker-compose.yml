@@ -1,27 +1,13 @@
-# version: '3.1'
-
-# services:
-#   app:
-#     build: .
-#     image: azko-admin-image
-#     container_name: azko-admin-front
-#     restart: always
-#     networks:
-#       - proxynet
-
-# networks:
-#   proxynet:
-#     external: true
-
 services:
   azko-admin:
-    image: $IMAGE_NAME:$IMAGE_TAG
+    image: ${IMAGE_NAME}:${IMAGE_TAG} 
     container_name: azko-admin
     restart: always
+    ports:
+       - "127.0.0.1:3003:80"
     networks:
-      proxynet:
+      - proxynet
 
 networks:
   proxynet:
     external: true
-    name: proxynet
