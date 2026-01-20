@@ -34,7 +34,7 @@ const CustomSidebar = () => {
             </div>
             <Link to={routes.dashboard.path}
                 className="img flex justify-content-center">
-                <img width="100%" src={Logo} alt="AFM PRO" className='my-2 p-2'/>
+                <img width="100%" src={Logo} alt="Az-Ko PRO" className='my-2 p-2'/>
             </Link>
             <nav>
                 <ul className="menu">
