@@ -5,7 +5,6 @@
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^38.0.1",
     "@ckeditor/ckeditor5-react": "^6.0.0",
-    "@ckeditor/ckeditor5-watchdog": "^47.4.0",
     "@formkit/auto-animate": "^1.0.0-beta.6",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -26,6 +25,7 @@
     "react-sortable": "^2.0.0",
     "react-sortablejs": "^6.1.4",
     "react-toastify": "^9.1.1",
+    "sass": "^1.58.0",
     "standart": "^6.1.0",
     "web-vitals": "^2.1.4"
   },
@@ -60,7 +60,7 @@
     "eslint-plugin-jsx-a11y": "^6.5.1",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
-    "sass": "^1.97.2",
+    "sass": "^1.49.8",
     "stylelint": "^14.5.3",
     "stylelint-config-standard": "^25.0.0",
     "stylelint-config-standard-scss": "^3.0.0"
