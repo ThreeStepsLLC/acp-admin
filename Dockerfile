@@ -1,16 +1,15 @@
-FROM node:16.20.1 AS build
-WORKDIR /app
-COPY package.json /app/
+FROM node:16.20.1
 
+WORKDIR /app
+
+COPY package.json package-lock.json ./
 RUN npm install --force
-COPY ./ /app/
+
+COPY . .
 RUN npm run build
 
-FROM nginx:1.23.3-alpine
+RUN npm install -g serve
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+EXPOSE 3000
 
-COPY --from=build /app/build /usr/share/nginx/html
-
-CMD ["nginx", "-g","daemon off;"]
-
+CMD ["serve", "-s", "build", "-l", "3000"]
